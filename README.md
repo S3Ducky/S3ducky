@@ -2,6 +2,9 @@
 
 A modern Windows desktop application for browsing and downloading files from AWS S3 buckets with an intuitive GUI.
 
+## Disclaimer
+This project is not affiliated with or endorsed by Amazon Web Services, Inc. (AWS). It is an independent application developed for educational and personal use. Use at your own risk.
+
 ## Features
 
 - **Secure Credential Input**: Enter AWS credentials securely with masked secret key input
