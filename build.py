@@ -39,24 +39,15 @@ def install_dependencies():
 def build_executable():
     """Build the standalone executable"""
     print("Building standalone executable...")
-    
-    # PyInstaller command with options
-    # cmd = [
-    #     "pyinstaller",
-    #     "--onefile",              # Create a single executable file
-    #     "--windowed",             # Hide console window (for GUI apps)
-    #     "--name=S3Ducky",         # Set executable name        "--icon=asset/logo.png",  # Use logo as icon
-    #     "--add-data=asset;asset", # Include asset folder
-    #     "s3_bucket_viewer.py"
-    # ]
+      # PyInstaller command with options
     cmd = [
         "pyinstaller",
         "--onefile",              # Create a single executable file
         "--windowed",             # Hide console window (for GUI apps)
         "--name=S3Ducky",         # Set executable name
         "--icon=asset/logo.png",  # Use logo as icon
-        "--add-data=asset:asset", # Include asset folder (use ':' on Linux)
-        "s3_bucket_viewer.py"
+        "--add-data=asset:asset", # Include asset folder
+        "main.py"
     ]
     
     try:
@@ -80,10 +71,9 @@ def main():
     """Main build process"""
     print("S3 Bucket Viewer - Build Script")
     print("="*40)
-    
-    # Check if we're in the correct directory
-    if not os.path.exists("s3_bucket_viewer.py"):
-        print("Error: s3_bucket_viewer.py not found!")
+      # Check if we're in the correct directory
+    if not os.path.exists("main.py"):
+        print("Error: main.py not found!")
         print("Please run this script from the project directory.")
         return
     

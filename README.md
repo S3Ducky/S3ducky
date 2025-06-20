@@ -1,66 +1,72 @@
-# S3 Bucket Viewer
+# S3Ducky
 
-<p align="center">
-  <img src="asset/logo.png" alt="S3Ducky Logo" width="120"/>
-</p>
-
-A Windows desktop application for browsing and downloading files from AWS S3 buckets.
+A modern Windows desktop application for browsing and downloading files from AWS S3 buckets with an intuitive GUI.
 
 ## Features
 
 - **Secure Credential Input**: Enter AWS credentials securely with masked secret key input
 - **S3 Bucket Browsing**: View all files in your S3 bucket with file sizes and modification dates
+- **Prefix Filtering**: Filter files by prefix to narrow down your search
 - **Multi-file Selection**: Select individual files or use Select All/Deselect All functionality
 - **Flexible Downloads**: 
   - Download individual files to a chosen directory
   - Download multiple files as a compressed ZIP archive
 - **Error Handling**: Comprehensive error handling for AWS connectivity and credential issues
-- **User-friendly Interface**: Clean, intuitive Tkinter-based GUI
+- **Modern UI**: Clean, intuitive interface with logo branding and clickable footer links
+- **Modular Architecture**: Well-structured package design for maintainability and extensibility
 
 ## Requirements
 
 - Python 3.7 or higher
 - AWS S3 credentials (Access Key, Secret Key)
 - Internet connection
+- Optional: Pillow (PIL) for PNG logo support
 
 ## Installation
 
-A. Executable Installation (Recommended)
-1. **Clone or download this repository**
-2. Open a terminal or command prompt at the S3Ducky folder
-3. Run the command:
-   ```
-   python build.py
-   ```
-   On windows, you can also double click on build.bat to build the executable.
-   
-B. Local Installation (from source)
 1. **Clone or download this repository**
 2. **Install dependencies:**
-   ```
+   ```bash
    pip install -r requirements.txt
    ```
 
 ## Usage
 
 ### Running from Source
+
+**Option 1: Using the main entry point**
+```bash
+python main.py
 ```
+
+**Option 2: Running as a module**
+```bash
+python -m s3ducky
+```
+
+**Option 3: Legacy method (deprecated)**
+```bash
 python s3_bucket_viewer.py
 ```
 
 ### Building Standalone Executable
 
-1. **Install PyInstaller:**
-   ```
-   pip install pyinstaller
-   ```
+**Automated build (recommended):**
+```bash
+python build.py
+```
 
-2. **Build the executable:**
-   ```
-   pyinstaller --onefile s3_bucket_viewer.py
-   ```
+**Windows batch script:**
+```bash
+build.bat
+```
 
-3. **Find the executable in the `dist` folder**
+**Manual PyInstaller command:**
+```bash
+pyinstaller --onefile --windowed --name=S3Ducky --icon=asset/logo.png --add-data=asset;asset main.py
+```
+
+The executable will be created in the `dist` folder as `S3Ducky.exe`.
 
 ## Application Workflow
 
@@ -113,3 +119,27 @@ This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.t
 - Python 3.7+
 - Minimum 100MB free disk space
 - Internet connection for AWS S3 access
+
+## Package Structure
+
+S3Ducky follows a modular package structure for better maintainability:
+
+```
+s3ducky/
+├── __init__.py              # Package initialization
+├── __main__.py              # Module entry point
+├── app.py                   # Main application controller
+├── core/                    # Core business logic
+│   ├── s3_client.py        # S3 connection and operations
+│   └── file_manager.py     # File download management
+├── gui/                     # User interface components
+│   ├── main_window.py      # Main window manager
+│   ├── credentials_page.py # Credentials input page
+│   ├── file_browser.py     # File browsing page
+│   └── footer.py           # Footer component
+└── utils/                   # Utility functions
+    ├── formatters.py       # Data formatting utilities
+    └── image_utils.py      # Image and icon utilities
+```
+
+For detailed information about the package structure, see [PACKAGE_STRUCTURE.md](PACKAGE_STRUCTURE.md).

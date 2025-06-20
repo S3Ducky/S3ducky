@@ -8,7 +8,7 @@ python -m pip install pyinstaller
 
 echo.
 echo Building executable...
-pyinstaller --onefile --windowed --name=S3Ducky --icon=asset/logo.png --add-data=asset;asset s3_bucket_viewer.py
+pyinstaller --onefile --windowed --name=S3Ducky --icon=asset/logo.png --add-data=asset;asset main.py
 
 echo.
 echo Build complete! Check the dist folder for S3Ducky.exe
