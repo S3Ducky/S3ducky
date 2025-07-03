@@ -53,8 +53,10 @@ jobs:
           OS="${{ runner.os }}"
           if [[ "$OS" == "Linux" ]]; then
             tar -czvf S3Ducky-${OS}.tar.gz S3Ducky-${OS}
-          else
+          elif [[ "$OS" == "macOS" ]]; then
             zip S3Ducky-${OS}.zip S3Ducky-${OS}
+          elif [[ "$OS" == "Windows" ]]; then
+            powershell -Command "Compress-Archive -Path S3Ducky-${OS}.exe -DestinationPath S3Ducky-${OS}.zip"
           fi
         shell: bash
 
