@@ -1,0 +1,98 @@
+name: Build & Release S3Ducky
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and Archive Binaries
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+
+      - name: Build Executable
+        run: |
+          pyinstaller --onefile --windowed --name=S3Ducky main.py
+
+      - name: Rename Output Based on OS
+        run: |
+          OS="${{ runner.os }}"
+          EXT=""
+          if [[ "$OS" == "Windows" ]]; then
+            EXT=".exe"
+          elif [[ "$OS" == "macOS" ]]; then
+            EXT=""
+          fi
+          OUTPUT_NAME="S3Ducky-${OS}${EXT}"
+          mv dist/S3Ducky${EXT} $OUTPUT_NAME
+          echo "OUTPUT_NAME=$OUTPUT_NAME" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Archive Binary
+        run: |
+          OS="${{ runner.os }}"
+          if [[ "$OS" == "Linux" ]]; then
+            tar -czvf S3Ducky-${OS}.tar.gz S3Ducky-${OS}
+          else
+            zip S3Ducky-${OS}.zip S3Ducky-${OS}
+          fi
+        shell: bash
+
+      - name: Upload Artifacts (Binary & Archive)
+        uses: actions/upload-artifact@v4
+        with:
+          name: s3ducky-${{ runner.os }}
+          path: |
+            S3Ducky-${{ runner.os }}
+            S3Ducky-${{ runner.os }}.*
+  
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Set Version Tag
+        id: version
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Last tag: $LAST_TAG"
+          VERSION=$(python -c "from packaging.version import parse; v=parse('$LAST_TAG'.lstrip('v')); print(f'v{v.major}.{v.minor}.{v.micro + 1}')")
+          echo "RELEASE_TAG=$VERSION" >> $GITHUB_ENV
+          echo "release_tag=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.release_tag }}
+          name: "S3Ducky ${{ steps.version.outputs.release_tag }}"
+          files: |
+            artifacts/**/S3Ducky-*
